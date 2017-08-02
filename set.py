@@ -164,7 +164,7 @@ class Set(object):
             closing = tok()
             if closing != ")":
                 raise SyntaxError(
-                    "Unexpected %s, expected ']'" % repr(closing)
+                    "Unexpected %s, expected ')'" % repr(closing)
                 )
             return (
                 add(get(first), get(second))
