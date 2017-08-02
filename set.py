@@ -219,8 +219,7 @@ class Set(object):
                             index += 1
                     while index < len(code) and code[index] in " \t\f\v\r\n":
                         index += 1
-            except Exception as e:
-                raise e
+            except:
                 pass  # invalid line, just skip it
         return self  # yay fluent
 
