@@ -1,6 +1,7 @@
 from enum import Enum
 from sys import stdin, stdout
 import argparse
+import os
 
 
 class Eof(object):
