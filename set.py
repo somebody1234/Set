@@ -254,7 +254,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-d", "--debug", action="store_true"
-        help="Input."
+        help="If enabled, shows parse errors."
     )
     argv = parser.parse_args()
     code = input = ""
