@@ -15,21 +15,25 @@ EOF = Eof()
 
 
 class Set(object):
-    __slots__ = ("variables", "program", "index", "input", "input_index")
+    __slots__ = (
+        "variables", "program", "index", "input", "input_index",
+        "debug"
+    )
 
-    def __init__(self):
+    def __init__(self, debug=False):
         self.variables = {"?": 0}
         self.program = []
         self.index = 0
         self.input = ""
         self.input_index = -1
+        self.debug = debug
         for lowercase in "abcdefghijklmnopqrstuvwxyz":
             self.variables[lowercase] = 0
         for uppercase in "ABCDEFGHIJKLMNOPQRSTUVWZYZ":
             self.variables[uppercase] = ord(uppercase)
 
     def add(self, code):
-        index = 0
+        index = debug_index = 0
 
         def get(item):
             if isinstance(item, int):
@@ -181,6 +185,7 @@ class Set(object):
                 index += 1
         while index < len(code):
             try:
+                debug_index += 1
                 # skip whitespace and comments
                 # ok now check for a conditional
                 conditional = None
@@ -219,7 +224,9 @@ class Set(object):
                             index += 1
                     while index < len(code) and code[index] in " \t\f\v\r\n":
                         index += 1
-            except:
+            except Exception as e:
+                if self.debug:
+                    print("%s on line %s" % (str(e), debug_index))
                 pass  # invalid line, just skip it
         return self  # yay fluent
 
@@ -245,6 +252,10 @@ if __name__ == "__main__":
         "-i", "--input", type=str, nargs="?", default="",
         help="Input."
     )
+    parser.add_argument(
+        "-d", "--debug", action="store_true"
+        help="Input."
+    )
     argv = parser.parse_args()
     code = input = ""
     if argv.code:
@@ -265,4 +276,4 @@ if __name__ == "__main__":
         input = argv.input
     else:
         input = stdin.read()
-    Set().add(code).run(input)
+    Set(debug=debug).add(code).run(input)
