@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
+
 from enum import Enum
-from sys import stdin, stdout
+from sys import stdin, stdout, stderr
 import argparse
 import os
 
@@ -12,6 +14,10 @@ class Eof(object):
         return "EOF"
 
 EOF = Eof()
+_chr = chr
+
+def chr(value):
+    return _chr(value) if value >= 0 else ""
 
 
 class Set(object):
@@ -226,7 +232,9 @@ class Set(object):
                         index += 1
             except Exception as e:
                 if self.debug:
-                    print("%s on line %s" % (str(e), debug_index))
+                    stderr.write("%s on line %s\n" % (str(e), debug_index))
+                while index < len(code) and code[index - 1] != "\n":
+                    index += 1
                 pass  # invalid line, just skip it
         return self  # yay fluent
 
@@ -249,12 +257,16 @@ if __name__ == "__main__":
         help="Code."
     )
     parser.add_argument(
-        "-i", "--input", type=str, nargs="?", default="",
+        "-i", "--input", type=str, nargs="?", default=None,
         help="Input."
     )
     parser.add_argument(
-        "-d", "--debug", action="store_true"
+        "-d", "--debug", action="store_true",
         help="If enabled, shows parse errors."
+    )
+    parser.add_argument(
+        "-od", "--onlydebug", action="store_true",
+        help="If enabled, shows parse errors and exits."
     )
     argv = parser.parse_args()
     code = input = ""
@@ -272,8 +284,11 @@ if __name__ == "__main__":
                 "FileNotFoundError: The specified Set file was not found."
             )
             sys.exit(1)
-    if argv.input:
+    if argv.input is not None:
         input = argv.input
     else:
         input = stdin.read()
-    Set(debug=debug).add(code).run(input)
+    if not argv.onlydebug:
+        Set(debug=argv.debug).add(code).run(input)
+    else:
+        Set(debug=argv.debug).add(code)
