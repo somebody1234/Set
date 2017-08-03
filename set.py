@@ -235,6 +235,13 @@ class Set(object):
                     stderr.write("%s on line %s\n" % (str(e), debug_index))
                 while index < len(code) and code[index - 1] != "\n":
                     index += 1
+                while index < len(code) and code[index] in " \t\f\v\r\n>":
+                    if code[index] == ">":
+                        index += 1
+                        while index < len(code) and code[index - 1] != "\n":
+                            index += 1
+                    while index < len(code) and code[index] in " \t\f\v\r\n":
+                        index += 1
                 pass  # invalid line, just skip it
         return self  # yay fluent
 
