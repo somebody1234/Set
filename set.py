@@ -233,6 +233,7 @@ class Set(object):
             except Exception as e:
                 if self.debug:
                     stderr.write("%s on line %s\n" % (str(e), debug_index))
+                index += 1
                 while index < len(code) and code[index - 1] != "\n":
                     index += 1
                 while index < len(code) and code[index] in " \t\f\v\r\n>":
